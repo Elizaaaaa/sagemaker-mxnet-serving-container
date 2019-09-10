@@ -20,7 +20,7 @@ from sagemaker import session
 from sagemaker import utils
 from sagemaker.mxnet import MXNetModel
 
-RESOURCE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources'))
+RESOURCE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'resources'))
 DEFAULT_HANDLER_PATH = os.path.join(RESOURCE_PATH, 'resnet50v2')
 MODEL_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model.tar.gz')
 SCRIPT_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model', 'code', 'mxnet_model_service.py')
@@ -55,7 +55,8 @@ def test_elastic_inference():
                         py_version='py3',
                         sagemaker_session=sagemaker_session)
 
-    predictor = model.deploy(initial_instance_count=1,
+    predictor = model.deploy(AccountId='841569659894',
+                             initial_instance_count=1,
                              instance_type=instance_type,
                              endpoint_name=endpoint_name)
 
