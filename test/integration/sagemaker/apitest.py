@@ -20,9 +20,9 @@ from sagemaker import session
 from sagemaker import utils
 from sagemaker.mxnet import MXNetModel
 
-from test.integration import EI_SUPPORTED_REGIONS, RESOURCE_PATH
-from test.integration.sagemaker.timeout import timeout_and_delete_endpoint_by_name
+from timeout import timeout_and_delete_endpoint_by_name
 
+RESOURCE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources'))
 DEFAULT_HANDLER_PATH = os.path.join(RESOURCE_PATH, 'resnet50v2')
 MODEL_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model.tar.gz')
 SCRIPT_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model', 'code', 'mxnet_model_service.py')
@@ -33,14 +33,6 @@ def skip_if_no_accelerator(accelerator_type):
     if accelerator_type is None:
         pytest.skip('Skipping because accelerator type was not provided')
 
-
-@pytest.fixture(autouse=True)
-def skip_if_non_supported_ei_region(region):
-    if region not in EI_SUPPORTED_REGIONS:
-        pytest.skip('EI is not supported in {}'.format(region))
-
-
-@pytest.mark.skip_if_non_supported_ei_region()
 @pytest.mark.skip_if_no_accelerator()
 def test_elastic_inference():
     endpoint_name = utils.unique_name_from_base('mx-p3-8x-resnet')
