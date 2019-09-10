@@ -43,7 +43,10 @@ def test_elastic_inference():
         "us-west-2",
         endpoint_url="https://maeveruntime.loadtest.us-west-2.ml-platform.aws.a2z.com")
     
-    sagemaker_session = session.Session(sagemaker_client=maeve_client, sagemaker_runtime_client=runtime_client)
+    smruntimeclient = boto3.client('sagemaker-runtime')
+    smclient = boto3.client('sagemaker')
+    
+    sagemaker_session = session.Session(sagemaker_client=smclient, sagemaker_runtime_client=smruntimeclient)
 
     prefix = 'mxnet-serving/default-handlers'
     model_data = sagemaker_session.upload_data(path=MODEL_PATH, key_prefix=prefix)
@@ -55,8 +58,7 @@ def test_elastic_inference():
                         py_version='py3',
                         sagemaker_session=sagemaker_session)
 
-    predictor = model.deploy(AccountId='841569659894',
-                             initial_instance_count=1,
+    predictor = model.deploy(initial_instance_count=1,
                              instance_type=instance_type,
                              endpoint_name=endpoint_name)
 
