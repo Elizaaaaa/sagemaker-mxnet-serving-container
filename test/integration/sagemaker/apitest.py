@@ -20,8 +20,6 @@ from sagemaker import session
 from sagemaker import utils
 from sagemaker.mxnet import MXNetModel
 
-from timeout import timeout_and_delete_endpoint_by_name
-
 RESOURCE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources'))
 DEFAULT_HANDLER_PATH = os.path.join(RESOURCE_PATH, 'resnet50v2')
 MODEL_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model.tar.gz')
@@ -47,25 +45,22 @@ def test_elastic_inference():
     
     sagemaker_session = session.Session(sagemaker_client=maeve_client, sagemaker_runtime_client=runtime_client)
 
-    with timeout_and_delete_endpoint_by_name(endpoint_name=endpoint_name,
-                                             sagemaker_session=sagemaker_session,
-                                             minutes=20):
-        prefix = 'mxnet-serving/default-handlers'
-        model_data = sagemaker_session.upload_data(path=MODEL_PATH, key_prefix=prefix)
-        model = MXNetModel(model_data=model_data,
-                           entry_point=SCRIPT_PATH,
-                           role='arn:aws:iam::841569659894:role/sagemaker-access-role',
-                           image='763104351884.dkr.ecr.us-west-2.amazonaws.com/mxnet-inference:1.4.1-gpu-py36-cu100-ubuntu16.04',
-                           framework_version=framework_version,
-                           py_version='py3',
-                           sagemaker_session=sagemaker_session)
+    prefix = 'mxnet-serving/default-handlers'
+    model_data = sagemaker_session.upload_data(path=MODEL_PATH, key_prefix=prefix)
+    model = MXNetModel(model_data=model_data,
+                        entry_point=SCRIPT_PATH,
+                        role='arn:aws:iam::841569659894:role/sagemaker-access-role',
+                        image='763104351884.dkr.ecr.us-west-2.amazonaws.com/mxnet-inference:1.4.1-gpu-py36-cu100-ubuntu16.04',
+                        framework_version=framework_version,
+                        py_version='py3',
+                        sagemaker_session=sagemaker_session)
 
-        predictor = model.deploy(initial_instance_count=1,
-                                 instance_type=instance_type,
-                                 endpoint_name=endpoint_name)
+    predictor = model.deploy(initial_instance_count=1,
+                             instance_type=instance_type,
+                             endpoint_name=endpoint_name)
 
-        output = predictor.predict([[1, 2]])
-        assert [[4.9999918937683105]] == output
+    output = predictor.predict([[1, 2]])
+    assert [[4.9999918937683105]] == output
 
 
 test_elastic_inference()
