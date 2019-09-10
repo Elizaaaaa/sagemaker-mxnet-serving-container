@@ -13,8 +13,10 @@
 from __future__ import absolute_import
 
 import os
+import boto3
 
 import pytest
+from sagemaker import session
 from sagemaker import utils
 from sagemaker.mxnet import MXNetModel
 
@@ -40,8 +42,18 @@ def skip_if_non_supported_ei_region(region):
 
 @pytest.mark.skip_if_non_supported_ei_region()
 @pytest.mark.skip_if_no_accelerator()
-def test_elastic_inference(ecr_image, sagemaker_session, instance_type, accelerator_type, framework_version):
+def test_elastic_inference():
     endpoint_name = utils.unique_name_from_base('mx-p3-8x-resnet')
+    instance_type = 'ml.p3.8xlarge'
+    framework_version = '1.4.1'
+    
+    maeve_client = boto3.client("maeve","us-west-2", endpoint_url="https://maeve.loadtest.us-west-2.ml-platform.aws.a2z.com")
+    runtime_client = boto3.client(
+        "sagemaker-runtime", 
+        "us-west-2",
+        endpoint_url="https://maeveruntime.loadtest.us-west-2.ml-platform.aws.a2z.com")
+    
+    sagemaker_session = session.Session(sagemaker_client=maeve_client, sagemaker_runtime_client=runtime_client)
 
     with timeout_and_delete_endpoint_by_name(endpoint_name=endpoint_name,
                                              sagemaker_session=sagemaker_session,
@@ -58,8 +70,10 @@ def test_elastic_inference(ecr_image, sagemaker_session, instance_type, accelera
 
         predictor = model.deploy(initial_instance_count=1,
                                  instance_type=instance_type,
-                                 accelerator_type=accelerator_type,
                                  endpoint_name=endpoint_name)
 
         output = predictor.predict([[1, 2]])
         assert [[4.9999918937683105]] == output
+
+
+test_elastic_inference()
