@@ -22,11 +22,11 @@ from sagemaker_mxnet_serving_container.utils import get_default_context, read_da
 PREFERRED_BATCH_SIZE_PARAM = 'SAGEMAKER_DEFAULT_MODEL_FIRST_DIMENSION_SIZE'
 INFERENCE_ACCELERATOR_PRESENT_ENV = 'SAGEMAKER_INFERENCE_ACCELERATOR_PRESENT'
 
-DEFAULT_MODEL_NAME = 'model'
+DEFAULT_MODEL_NAME = 'resnet50'
 DEFAULT_MODEL_FILENAMES = {
-    'symbol': 'model-symbol.json',
-    'params': 'model-0000.params',
-    'shapes': 'model-shapes.json',
+    'symbol': 'resnet50v2-symbol.json',
+    'params': 'resnet50v2-0000.params',
+    'shapes': 'signature.json',
 }
 
 
