@@ -33,8 +33,8 @@ def skip_if_no_accelerator(accelerator_type):
 
 @pytest.mark.skip_if_no_accelerator()
 def test_elastic_inference():
-    endpoint_name = utils.unique_name_from_base('mx-p3-8x-resnet')
-    instance_type = 'mx-model-test'
+    endpoint_name = utils.unique_name_from_base('mx-model-test')
+    instance_type = 'ml.p3.8xlarge'
     framework_version = '1.4.1'
     
     
