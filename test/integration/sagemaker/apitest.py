@@ -21,9 +21,9 @@ from sagemaker import utils
 from sagemaker.mxnet import MXNetModel
 
 RESOURCE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'resources'))
-DEFAULT_HANDLER_PATH = os.path.join(RESOURCE_PATH, 'default_handlers')
-MODEL_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model.tar.gz')
-SCRIPT_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model', 'code', 'empty_module.py')
+DEFAULT_HANDLER_PATH = os.path.join(RESOURCE_PATH, 'resnet')
+MODEL_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'resnet50v2.tar.gz')
+SCRIPT_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'resnet50v2', 'mxnet_model_service.py')
 
 
 @pytest.fixture(autouse=True)
@@ -33,7 +33,7 @@ def skip_if_no_accelerator(accelerator_type):
 
 @pytest.mark.skip_if_no_accelerator()
 def test_elastic_inference():
-    endpoint_name = utils.unique_name_from_base('mx-model-test')
+    endpoint_name = utils.unique_name_from_base('mx-resnet-p3-8x')
     instance_type = 'ml.p3.8xlarge'
     framework_version = '1.4.1'
     
