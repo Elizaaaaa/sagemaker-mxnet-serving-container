@@ -16,14 +16,14 @@ import os
 import boto3
 
 import pytest
-from sagemaker import session
+from sagemaker import LocalSession, Session
 from sagemaker import utils
 from sagemaker.mxnet import MXNetModel
 
 RESOURCE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'resources'))
-DEFAULT_HANDLER_PATH = os.path.join(RESOURCE_PATH, 'resnet50v2')
+DEFAULT_HANDLER_PATH = os.path.join(RESOURCE_PATH, 'default_handlers')
 MODEL_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model.tar.gz')
-SCRIPT_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model', 'code', 'mxnet_model_service.py')
+SCRIPT_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model', 'code', 'empty_module.py')
 
 
 @pytest.fixture(autouse=True)
@@ -34,19 +34,15 @@ def skip_if_no_accelerator(accelerator_type):
 @pytest.mark.skip_if_no_accelerator()
 def test_elastic_inference():
     endpoint_name = utils.unique_name_from_base('mx-p3-8x-resnet')
-    instance_type = 'ml.p3.8xlarge'
+    instance_type = 'mx-model-test'
     framework_version = '1.4.1'
     
-    maeve_client = boto3.client("maeve","us-west-2", endpoint_url="https://maeve.loadtest.us-west-2.ml-platform.aws.a2z.com")
-    runtime_client = boto3.client(
-        "sagemaker-runtime", 
-        "us-west-2",
-        endpoint_url="https://maeveruntime.loadtest.us-west-2.ml-platform.aws.a2z.com")
     
-    smruntimeclient = boto3.client('sagemaker-runtime')
-    smclient = boto3.client('sagemaker')
+    #smruntimeclient = boto3.client('sagemaker-runtime')
+    #smclient = boto3.client('sagemaker')
+    #sagemaker_session = Session(sagemaker_client=smclient, sagemaker_runtime_client=smruntimeclient)
     
-    sagemaker_session = session.Session(sagemaker_client=smclient, sagemaker_runtime_client=smruntimeclient)
+    sagemaker_session = Session(boto_session=boto3.Session(region_name='us-west-2'))
 
     prefix = 'mxnet-serving/default-handlers'
     model_data = sagemaker_session.upload_data(path=MODEL_PATH, key_prefix=prefix)
