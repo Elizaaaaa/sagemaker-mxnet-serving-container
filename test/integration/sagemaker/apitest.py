@@ -46,7 +46,7 @@ def test_elastic_inference():
 
     #prefix = 'mxnet-serving/resnet50'
     #model_data = sagemaker_session.upload_data(path=MODEL_PATH, key_prefix=prefix)
-    model = MXNetModel(model_data='s3://imagenet-resnet-mxnet/mx-reset50v2.tar.gz',
+    model = MXNetModel(model_data='s3://imagenet-resnet-mxnet/default-handler-resnet50.tar.gz',
                         entry_point=SCRIPT_PATH,
                         role='arn:aws:iam::841569659894:role/sagemaker-access-role',
                         image='763104351884.dkr.ecr.us-west-2.amazonaws.com/mxnet-inference:1.4.1-gpu-py36-cu100-ubuntu16.04',
