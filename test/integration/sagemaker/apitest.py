@@ -23,7 +23,7 @@ from sagemaker.mxnet import MXNetModel
 RESOURCE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'resources'))
 DEFAULT_HANDLER_PATH = os.path.join(RESOURCE_PATH, 'resnet')
 MODEL_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'resnet50.tar.gz')
-SCRIPT_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'resnet50', 'mxnet_model_service.py')
+SCRIPT_PATH = os.path.join(os.path.dirname(__file__), '../../../src/sagemaker_mxnet_serving_container', 'default_inference_handler.py')
 
 
 @pytest.fixture(autouse=True)
@@ -44,9 +44,9 @@ def test_elastic_inference():
     
     sagemaker_session = Session(boto_session=boto3.Session(region_name='us-west-2'))
 
-    prefix = 'mxnet-serving/resnet50'
-    model_data = sagemaker_session.upload_data(path=MODEL_PATH, key_prefix=prefix)
-    model = MXNetModel(model_data=model_data,
+    #prefix = 'mxnet-serving/resnet50'
+    #model_data = sagemaker_session.upload_data(path=MODEL_PATH, key_prefix=prefix)
+    model = MXNetModel(model_data='s3://imagenet-resnet-mxnet/mx-reset50v2.tar.gz',
                         entry_point=SCRIPT_PATH,
                         role='arn:aws:iam::841569659894:role/sagemaker-access-role',
                         image='763104351884.dkr.ecr.us-west-2.amazonaws.com/mxnet-inference:1.4.1-gpu-py36-cu100-ubuntu16.04',
