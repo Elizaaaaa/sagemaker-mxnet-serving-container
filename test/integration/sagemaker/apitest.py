@@ -60,6 +60,7 @@ def test_elastic_inference():
 
     output = predictor.predict([[1, 2]])
     assert [[4.9999918937683105]] == output
+    print(output)
 
 
 test_elastic_inference()
