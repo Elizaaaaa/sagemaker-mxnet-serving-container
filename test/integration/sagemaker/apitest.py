@@ -21,9 +21,9 @@ from sagemaker import utils
 from sagemaker.mxnet import MXNetModel
 
 RESOURCE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'resources'))
-DEFAULT_HANDLER_PATH = os.path.join(RESOURCE_PATH, 'resnet')
-MODEL_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'resnet50v2.tar.gz')
-SCRIPT_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'resnet50v2', 'mxnet_model_service.py')
+DEFAULT_HANDLER_PATH = os.path.join(RESOURCE_PATH, 'gluon_hosting')
+MODEL_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model')
+SCRIPT_PATH = os.path.join(DEFAULT_HANDLER_PATH, 'model', 'code', 'gluon.py')
 
 
 @pytest.fixture(autouse=True)
